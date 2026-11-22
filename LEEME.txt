@@ -1,0 +1,3 @@
+Carpeta assets/ (opcional):
+- logo.png / .jpg / .webp / .svg : logo de la app (si falta se usa el emblema floral).
+- logo_univalle.png / .jpg : si existe, aparece en la esquina de la app y en los PDF.
