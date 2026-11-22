@@ -30,9 +30,9 @@ from reportlab.platypus import (BaseDocTemplate, Frame, HRFlowable, Image, KeepT
 import content as ct  # noqa: E402
 import theme  # noqa: E402
 
-WINE, ROSE, PEACH = colors.HexColor("#8E2347"), colors.HexColor("#F2668B"), colors.HexColor("#FFA94D")
-TX, MUTED = colors.HexColor("#4A2B2B"), colors.HexColor("#7A5750")
-BORDER, SOFT, OKBG = colors.HexColor("#E6BC9F"), colors.HexColor("#FFF1E4"), colors.HexColor("#E9F7EE")
+WINE, ROSE, PEACH = colors.HexColor("#4B2A6B"), colors.HexColor("#7B4BAF"), colors.HexColor("#E8C25A")
+TX, MUTED = colors.HexColor("#2B1B3D"), colors.HexColor("#6B5A78")
+BORDER, SOFT, OKBG = colors.HexColor("#D9C49A"), colors.HexColor("#F3EAD7"), colors.HexColor("#E9F7EE")
 
 _MAP = {"α": "alfa", "β": "beta", "μ": "mu", "σ": "sigma", "→": "->", "←": "<-", "≥": ">=", "≤": "<=", "≠": "!=",
         "✿": "", "❀": "", "✓": "", "·": "-"}
@@ -53,7 +53,7 @@ def _inline(t: str) -> str:
 @lru_cache(maxsize=4096)
 def _math_png(latex: str, size: float = 12.5) -> bytes:
     fig = plt.figure(figsize=(0.1, 0.1))
-    fig.text(0, 0, f"${latex}$", fontsize=size, color="#4A2B2B")
+    fig.text(0, 0, f"${latex}$", fontsize=size, color="#2B1B3D")
     buf = io.BytesIO()
     fig.savefig(buf, format="png", dpi=DPI, bbox_inches="tight", pad_inches=0.04, transparent=True)
     plt.close(fig)
@@ -183,6 +183,10 @@ def build_pdf(titulo: str, problems: list[dict], *, solucion=False, formulas=Fal
     story += [mt, Spacer(1, 6)]
     if examen and not solucion:
         story.append(Paragraph("Resuelva cada ejercicio mostrando el procedimiento. Puede usar calculadora y tablas Z y t.", st["tag"]))
+    if not solucion:
+        tips = ct.TIPS_EXAMEN if examen else ct.TIPS_TALLER
+        story.append(Paragraph("Recomendaciones", st["sol"]))
+        story += [Paragraph(_inline("- " + t), st["tag"]) for t in tips[:3]]
     pts = round(5 / len(problems), 2) if examen and problems else None
     for i, p in enumerate(problems, 1):
         story += problem_flowables(i, p, st, width, solucion=solucion, formulas=formulas, puntos=pts)
