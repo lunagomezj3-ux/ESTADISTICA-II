@@ -31,7 +31,7 @@ import content as ct  # noqa: E402
 import theme  # noqa: E402
 
 WINE, ROSE, PEACH = colors.HexColor("#4B2A6B"), colors.HexColor("#7B4BAF"), colors.HexColor("#E8C25A")
-TX, MUTED = colors.HexColor("#2B1B3D"), colors.HexColor("#6B5A78")
+TX, MUTED = colors.HexColor("#111111"), colors.HexColor("#2E2838")
 BORDER, SOFT, OKBG = colors.HexColor("#D9C49A"), colors.HexColor("#F3EAD7"), colors.HexColor("#E9F7EE")
 
 _MAP = {"α": "alfa", "β": "beta", "μ": "mu", "σ": "sigma", "→": "->", "←": "<-", "≥": ">=", "≤": "<=", "≠": "!=",
@@ -53,7 +53,7 @@ def _inline(t: str) -> str:
 @lru_cache(maxsize=4096)
 def _math_png(latex: str, size: float = 12.5) -> bytes:
     fig = plt.figure(figsize=(0.1, 0.1))
-    fig.text(0, 0, f"${latex}$", fontsize=size, color="#2B1B3D")
+    fig.text(0, 0, f"${latex}$", fontsize=size, color="#111111")
     buf = io.BytesIO()
     fig.savefig(buf, format="png", dpi=DPI, bbox_inches="tight", pad_inches=0.04, transparent=True)
     plt.close(fig)
@@ -85,7 +85,7 @@ def _styles():
         "sol": ParagraphStyle("sol", fontName="Helvetica-Bold", fontSize=9.5, leading=13, textColor=ROSE, spaceBefore=4, spaceAfter=2),
         "ans": ParagraphStyle("ans", fontName="Helvetica-Bold", fontSize=10, leading=14, textColor=TX),
         "cell": ParagraphStyle("cell", fontName="Helvetica", fontSize=9, leading=12, textColor=TX, alignment=1),
-        "head": ParagraphStyle("head", fontName="Helvetica-Bold", fontSize=9, leading=12, textColor=colors.white, alignment=1),
+        "head": ParagraphStyle("head", fontName="Helvetica-Bold", fontSize=9, leading=12, textColor=colors.HexColor("#111111"), alignment=1),
     }
 
 
@@ -93,7 +93,7 @@ def _tabla(rows, st):
     data = [[Paragraph(xesc(clean(c)), st["head"] if j == 0 else st["cell"]) for c in r] for j, r in enumerate(rows)]
     # primera fila = encabezado visual (valores de x); la segunda trae las probabilidades
     t = Table(data, hAlign="CENTER")
-    t.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), WINE), ("BACKGROUND", (0, 1), (0, -1), SOFT),
+    t.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), PEACH), ("BACKGROUND", (0, 1), (0, -1), SOFT),
                            ("GRID", (0, 0), (-1, -1), 0.5, BORDER), ("TOPPADDING", (0, 0), (-1, -1), 3),
                            ("BOTTOMPADDING", (0, 0), (-1, -1), 3), ("LEFTPADDING", (0, 0), (-1, -1), 8),
                            ("RIGHTPADDING", (0, 0), (-1, -1), 8)]))

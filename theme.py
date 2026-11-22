@@ -15,18 +15,18 @@ from pathlib import Path
 
 C = {
     "bg": "#FAF5EA", "surface": "#FFFFFF", "surface2": "#F3EAD7", "border": "#D9C49A",
-    "tx": "#2B1B3D", "muted": "#6B5A78",
+    "tx": "#111111", "muted": "#2E2838",
     "a1": "#C9962A",   # oro imperial
     "a2": "#E8C25A",   # oro claro (adorno del cabello)
     "pur": "#5B2E8C", "pur2": "#4B2A6B", "ink": "#2B1B3D", "red": "#B5342B",   # púrpura de corte, tinta, bermellón del palacio
     "ok": "#4CAF7A", "warn": "#E8A020", "bad": "#B5342B",
 }
 PALETA = [C["pur"], C["a1"], C["red"], "#8E6BBF", "#E8C25A", "#2B1B3D", "#6BBF8A"]
-AUTORA = "Jelen Nalaly"
+AUTORA = "Jinshi Ka Zuigetsu"
 
 NOMBRE = "ESTADÍSTICA 2"
 SIGNIFICADO = "Estudia con la elegancia de la corte imperial"
-LOGO_URL = ""
+LOGO_URL = "https://static.wikia.nocookie.net/asia/images/6/6e/Jinshi.jpg/revision/latest?cb=20260122233611&path-prefix=es"
 
 # Emblema floral de respaldo (se usa solo si no hay assets/logo.* y la URL no carga)
 _LOGO_SVG = """<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>
@@ -36,6 +36,30 @@ _LOGO_SVG = """<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>
 <g stroke='url(#g)' stroke-width='3' stroke-linecap='round' fill='none'><line x1='60' y1='13' x2='60' y2='24'/><circle cx='60' cy='30' r='5' fill='#B5342B' stroke='url(#g)'/></g>
 <text x='60' y='88' text-anchor='middle' font-size='56' font-weight='700' fill='url(#g)' font-family='Noto Serif CJK JP, Noto Serif JP, Yu Mincho, MS Mincho, serif'>壬</text>
 <circle cx='28' cy='100' r='3' fill='#E8C25A'/><circle cx='92' cy='100' r='3' fill='#E8C25A'/></svg>"""
+
+
+TIP_ICON_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0_e-nP3rAcLjNSPg1E6XkdCMvMjLCB-ESswaCJN_JtFNK2tpc4rp2xzw&s=10"
+
+_TIP_SVG = """<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='60' cy='60' r='56' fill='#F6E3A1' stroke='#C9962A' stroke-width='6'/>
+<path d='M60 26c-14 0-24 10-24 23 0 9 5 15 10 20 3 3 4 6 4 10h20c0-4 1-7 4-10 5-5 10-11 10-20 0-13-10-23-24-23z' fill='#E8C25A' stroke='#2B1B3D' stroke-width='3'/>
+<rect x='48' y='84' width='24' height='8' rx='3' fill='#2B1B3D'/></svg>"""
+
+
+def tip_icon_uri() -> str:
+    """Icono del botón de consejos: assets/tip_icon.(png|jpg|jpeg|webp|svg) si existe; si no, TIP_ICON_URL."""
+    base = Path(__file__).parent / "assets"
+    for ext, mime in (("png", "image/png"), ("jpg", "image/jpeg"), ("jpeg", "image/jpeg"),
+                      ("webp", "image/webp"), ("svg", "image/svg+xml")):
+        f = base / f"tip_icon.{ext}"
+        if f.exists():
+            return f"data:{mime};base64,{base64.b64encode(f.read_bytes()).decode()}"
+    return TIP_ICON_URL
+
+
+def tip_icon_html(px: int = 72) -> str:
+    fb = "data:image/svg+xml;base64," + base64.b64encode(_TIP_SVG.encode()).decode()
+    return (f'<img class="tip-icon" src="{tip_icon_uri()}" alt="consejo" width="{px}" height="{px}" referrerpolicy="no-referrer" '
+            f'onerror="this.onerror=null;this.src=\'{fb}\'">')
 
 
 def _fallback_uri() -> str:
@@ -344,41 +368,52 @@ li[role="option"]:hover, li[aria-selected="true"] {{ background:{c['surface2']} 
 EXTRA_CSS = """
 /* ===== Jinshi · corte imperial ===== */
 .stApp [data-testid="stSidebar"] { border-right:2px solid #C9962A; }
-.hero { background:linear-gradient(135deg,#2B1B3D 0%,#4B2A6B 62%,#6A3FA0 100%) !important; border:1px solid #C9962A !important;
-  box-shadow:0 14px 38px rgba(43,27,61,.35) !important; }
-.hero::after { content:'❖' !important; color:rgba(232,194,90,.22) !important; }
-.hero::before { content:'✦' !important; color:rgba(232,194,90,.30) !important; }
-.hero img { box-shadow:0 10px 28px rgba(201,150,42,.45) !important; }
-.hero h1 { background:linear-gradient(90deg,#F6E3A1,#E8C25A 55%,#C9962A) !important; -webkit-background-clip:text !important;
-  background-clip:text !important; -webkit-text-fill-color:transparent !important; color:transparent !important; }
-.hero .meaning { color:#F3EAD7 !important; }
-.hero p { color:#E4D6F0 !important; }
-.hero .chip { background:rgba(255,255,255,.10) !important; color:#F3EAD7 !important; border-color:rgba(232,194,90,.55) !important; }
-.hero .chip.author { color:#F6E3A1 !important; border-color:#E8C25A !important; }
+.hero { background:linear-gradient(135deg,#FFFBEF 0%,#F8EBC8 60%,#EFD58B 100%) !important; border:2px solid #C9962A !important;
+  box-shadow:0 14px 38px rgba(91,46,140,.22) !important; }
+.hero::after { content:'❖' !important; color:rgba(91,46,140,.12) !important; }
+.hero::before { content:'✦' !important; color:rgba(201,150,42,.30) !important; }
+.hero img, .sb-brand img { object-fit:cover; object-position:center top; border:3px solid #C9962A; }
+.hero img { box-shadow:0 10px 28px rgba(91,46,140,.35) !important; }
+.hero h1 { color:#111111 !important; -webkit-text-fill-color:#111111 !important; background:none !important;
+  text-shadow:0 2px 0 rgba(232,194,90,.7); }
+.hero .meaning { color:#111111 !important; font-weight:600 !important; }
+.hero p { color:#111111 !important; }
+.hero .chip { background:#FFFFFF !important; color:#111111 !important; border:1px solid #C9962A !important; }
+.hero .chip.author { background:#F6E3A1 !important; color:#111111 !important; border-color:#C9962A !important; font-weight:700 !important; }
+.sb-brand b, .sb-brand small, .sb-author, .sb-author b { color:#111111 !important; }
 h3, h4 { border-left:4px solid #C9962A; padding-left:10px; }
 
 /* ---------- selector de temas ---------- */
 .pick-title { font-family:'Sora',sans-serif; font-weight:700; font-size:1.05rem; color:#4B2A6B; margin:.2rem 0 .4rem; }
-.corte-head { display:flex; align-items:center; gap:8px; font-family:'Sora',sans-serif; font-weight:700; color:#fff;
-  background:linear-gradient(120deg,#4B2A6B,#6A3FA0); border-radius:12px; padding:8px 14px; margin:6px 0 8px;
-  border-bottom:3px solid #C9962A; }
-.corte-head small { margin-left:auto; color:#F6E3A1; font-weight:600; }
+.corte-head { display:flex; align-items:center; gap:8px; font-family:'Sora',sans-serif; font-weight:700; color:#111111;
+  background:linear-gradient(120deg,#F6E3A1,#E8C25A); border-radius:12px; padding:8px 14px; margin:6px 0 8px;
+  border-bottom:3px solid #5B2E8C; }
+.corte-head small { margin-left:auto; color:#111111; font-weight:700; }
 [data-testid="stVerticalBlockBorderWrapper"] { transition:all .15s ease; }
 [data-testid="stVerticalBlockBorderWrapper"]:has(input[type="checkbox"]:checked) {
   border-color:#C9962A !important; background:linear-gradient(180deg,#FFFBEF,#F8EBC8) !important;
   box-shadow:0 4px 16px rgba(201,150,42,.30) !important; }
-.sel-bar { background:#EFE6F7; border:1px dashed #5B2E8C; border-radius:12px; padding:8px 12px; margin:8px 0 12px; color:#2B1B3D; }
+.sel-bar { background:#EFE6F7; border:1px dashed #5B2E8C; border-radius:12px; padding:8px 12px; margin:8px 0 12px; color:#111111; }
 .sel-bar b { color:#5B2E8C; }
-.sel-chip { display:inline-block; background:#4B2A6B; color:#F6E3A1; border-radius:999px; padding:2px 10px; margin:2px 4px 2px 0; font-size:.78rem; font-weight:600; }
+.sel-chip { display:inline-block; background:#F6E3A1; color:#111111; border:1px solid #C9962A; border-radius:999px; padding:2px 10px; margin:2px 4px 2px 0; font-size:.78rem; font-weight:600; }
 
 /* ---------- consejos ---------- */
 .tip-box { background:linear-gradient(180deg,#FFFBEF,#FBF0D2); border:1px solid #E8C25A; border-left:5px solid #C9962A;
-  border-radius:12px; padding:9px 14px; margin:8px 0; color:#2B1B3D; font-size:.93rem; }
-.tip-box b { color:#4B2A6B; }
+  border-radius:12px; padding:9px 14px; margin:8px 0; color:#111111; font-size:.93rem; }
+.tip-box b { color:#111111; }
 .err-box { background:#FBEDEA; border:1px solid #E3B3AD; border-left:5px solid #B5342B; border-radius:12px; padding:9px 14px; margin:8px 0;
-  color:#2B1B3D; font-size:.93rem; }
-.err-box b { color:#B5342B; }
+  color:#111111; font-size:.93rem; }
+.err-box b { color:#111111; }
 .step-n { background:linear-gradient(120deg,#C9962A,#E8C25A) !important; color:#2B1B3D !important; }
+/* ---------- consejo (popover con icono) ---------- */
+.tip-head { display:flex; align-items:center; gap:14px; margin-bottom:6px; }
+.tip-head b { font-family:'Sora',sans-serif; font-size:1.05rem; color:#111111; }
+.tip-head small { display:block; color:#2E2838; }
+.tip-icon { border-radius:50%; object-fit:cover; border:3px solid #C9962A; box-shadow:0 4px 14px rgba(91,46,140,.35); }
+[data-testid="stPopover"] button { background:linear-gradient(120deg,#E8C25A,#C9962A) !important; color:#111111 !important;
+  border:0 !important; font-weight:700 !important; }
+[data-testid="stPopoverBody"], [data-testid="stPopoverBody"] * { color:#111111; }
+[data-testid="stSidebar"] *, [data-testid="stTabs"] button p { color:#111111; }
 """
 
 
@@ -400,7 +435,7 @@ def hero_html() -> str:
 def sidebar_brand_html() -> str:
     return (f'<div class="sb-brand">{_logo_img()}<div><b>{NOMBRE}</b>'
             f'<small>{_significado_html()}</small></div></div>'
-            f'<div class="sb-author">Autora · <b>{AUTORA}</b></div>')
+            f'<div class="sb-author">Autor · <b>{AUTORA}</b></div>')
 
 
 def style_fig(fig, h: int = 380):

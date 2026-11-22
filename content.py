@@ -351,3 +351,18 @@ def tip_for(tid: str, i: int) -> str:
 def error_for(tid: str, i: int) -> str:
     e = TOPICS[tid]["errores"]
     return e[i % len(e)]
+
+
+NIVEL_TIPS = {
+    "Fácil": "Es un ejercicio directo: identifica los datos, aplica la fórmula una sola vez y revisa las unidades.",
+    "Medio": "Combina dos ideas (por ejemplo estandarizar y usar el complemento). Ve por partes y no saltes pasos.",
+    "Difícil": "Requiere varios pasos encadenados. Haz un esquema de lo que te piden, resuelve cada parte por separado y verifica la coherencia al final.",
+}
+
+
+def consejo_detallado(p: dict, idx: int) -> dict:
+    """Material del botón «Ver consejo»: explica cómo pensar el ejercicio sin dar la respuesta."""
+    t = TOPICS[p["tema"]]
+    return {"tema": t["nombre"], "idea": tip_for(p["tema"], idx), "resumen": t["resumen"],
+            "inicio": t["estrategia"], "formulas": p["formulas"][:3], "error": error_for(p["tema"], idx),
+            "nivel": NIVEL_TIPS[p["nivel"]]}

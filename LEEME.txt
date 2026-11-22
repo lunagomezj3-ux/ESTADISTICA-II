@@ -1,3 +1,5 @@
-Carpeta assets/ (opcional):
-- logo.png / .jpg / .webp / .svg : logo de la app (si falta se usa el emblema floral).
-- logo_univalle.png / .jpg : si existe, aparece en la esquina de la app y en los PDF.
+Carpeta assets/ (opcional, tiene prioridad sobre las URL de theme.py):
+- logo.png / .jpg / .webp / .svg   : logo de la app (hoy se usa la URL de Jinshi definida en LOGO_URL).
+- tip_icon.png / .jpg / .webp / .svg : icono del botón «Ver consejo» (hoy se usa TIP_ICON_URL).
+- logo_univalle.png / .jpg         : si existe, aparece en la esquina de la app y en los PDF.
+Si una URL deja de cargar, la app muestra un emblema de respaldo; para que nunca falle, guarda las imágenes aquí.

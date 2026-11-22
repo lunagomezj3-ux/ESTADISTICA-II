@@ -21,7 +21,7 @@ import theme
 
 st.set_page_config(page_title="Simulador de Estadística 2", page_icon="❖", layout="wide")
 st.markdown(theme.css(), unsafe_allow_html=True)
-st.markdown("<style>.katex{color:#2B1B3D;font-size:1.08em}</style>", unsafe_allow_html=True)
+st.markdown("<style>.katex{color:#111111;font-size:1.08em}</style>", unsafe_allow_html=True)
 
 
 # ----------------------------------------------------------------------------- utilidades de interfaz
@@ -40,8 +40,28 @@ def tips_expander(titulo: str, tips: list[str], expanded: bool = False) -> None:
             st.markdown(f"- {t}")
 
 
+def consejo_popover(p: dict, idx: int, etiqueta: str) -> None:
+    """Botón «Ver consejo»: abre un panel con el icono y una explicación detallada (sin dar la respuesta)."""
+    d = ct.consejo_detallado(p, idx - 1)
+    with st.popover(f"💡 Ver consejo · {etiqueta} {idx}"):
+        st.markdown(f'<div class="tip-head">{theme.tip_icon_html(76)}<div><b>Consejo de Jinshi</b>'
+                    f'<small>{escape(d["tema"])}</small></div></div>', unsafe_allow_html=True)
+        st.markdown(f"**🎯 Idea clave.** {d['idea']}")
+        st.markdown("**📖 Recuerda la teoría.**")
+        st.markdown(d["resumen"])
+        st.markdown("**🧭 Por dónde empezar (método del tema).**")
+        for k, paso in enumerate(d["inicio"], 1):
+            st.markdown(f'<span class="step-n">{k}</span>{escape(paso, quote=False)}', unsafe_allow_html=True)
+        if d["formulas"]:
+            st.markdown("**📐 Fórmulas que te servirán.**")
+            for f in d["formulas"]:
+                st.latex(f)
+        st.markdown(f"**🎚️ Sobre el nivel {p['nivel']}.** {d['nivel']}")
+        st.markdown(f'<div class="err-box"><b>⚠️ Cuidado:</b> {escape(d["error"], quote=False)}</div>', unsafe_allow_html=True)
+
+
 def show_problem(p: dict, idx: int, *, solucion: bool, formulas: bool, puntos: float | None = None,
-                 tip: bool = False) -> None:
+                 tip: bool = False, etiqueta: str = "ejercicio") -> None:
     t = ct.TOPICS[p["tema"]]
     pts = f" · {puntos:g} pts" if puntos else ""
     st.markdown(f"#### Ejercicio {idx}")
@@ -55,7 +75,7 @@ def show_problem(p: dict, idx: int, *, solucion: bool, formulas: bool, puntos: f
             for f in p["formulas"]:
                 st.latex(f)
     if tip:
-        box("tip", "💡 Tip para resolverlo:", ct.tip_for(p["tema"], idx - 1))
+        consejo_popover(p, idx, etiqueta)
     if solucion:
         with st.container(border=True):
             st.markdown("**✅ Solución paso a paso**")
@@ -190,7 +210,7 @@ def workshop(kind: str) -> None:
     code_in = c3.text_input("Código (opcional)", key=f"{kind}_code", placeholder="Para repetir un " + nombre)
     ayuda = False
     if not es_ex:
-        ayuda = st.checkbox("Mostrar fórmulas de ayuda y un tip en cada ejercicio", value=True, key=f"{kind}_ayuda")
+        ayuda = st.checkbox("Mostrar fórmulas de ayuda y el botón de consejo en cada ejercicio", value=True, key=f"{kind}_ayuda")
     if temas and n < len(temas):
         st.warning(f"Elegiste {len(temas)} temas y {n} ejercicios: no todos los temas tendrán ejercicio. "
                    "Sube el número de ejercicios para cubrirlos todos.")
@@ -231,7 +251,8 @@ def workshop(kind: str) -> None:
     pts = round(5 / len(data["problems"]), 2) if es_ex else None
     for i, p in enumerate(data["problems"], 1):
         show_problem(p, i, solucion=data["show"], formulas=data["ayuda"] and not es_ex, puntos=pts,
-                     tip=(data["ayuda"] and not es_ex))
+                     tip=(data["ayuda"] and not es_ex) or (es_ex and data["show"]),
+                     etiqueta="pregunta" if es_ex else "ejercicio")
 
 
 with tab_taller:
